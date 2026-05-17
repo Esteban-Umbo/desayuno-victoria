@@ -43,7 +43,9 @@ border-radius:8px;
 cursor:pointer;
 }
 
-button:hover{background:#21867a;}
+button:hover{
+background:#21867a;
+}
 
 .total{
 font-size:28px;
@@ -62,15 +64,15 @@ font-weight:bold;
 <h3>Nombre</h3>
 <input id="nombre" style="width:100%;padding:10px;">
 
-<h3>Panes</h3>
+<h3>Panes (S/1.50 c/u)</h3>
 <div id="panes"></div>
 
 <h3>Bebidas</h3>
 <div id="bebidas"></div>
 
 <h3>Tipo de pan</h3>
-<label><input type="radio" name="tipoPan" value="0" checked> Tradicional</label>
-<label><input type="radio" name="tipoPan" value="0.3"> Integral (+S/0.30)</label>
+<label><input type="radio" name="tipoPan" value="Tradicional" checked> Tradicional</label>
+<label><input type="radio" name="tipoPan" value="Integral (+S/0.30)"> Integral (+S/0.30)</label>
 
 <h3>Total</h3>
 <div class="total" id="total">S/0.00</div>
@@ -82,15 +84,17 @@ font-weight:bold;
 
 <script>
 
-const URL = "https://script.google.com/macros/s/AKfycbz8v_jLCXRueH4rvLII1vBTT5QXjaQ0gLTxiDkcCLIdgpo0WeiEcHQopbPLPYDPb91Y/exec";
+const URL = "https://script.google.com/macros/s/AKfycbxqZhTuE30H7JlxlwoDma1v4Sh8qxpjWcyprsSsUSSuphFslPi5S6RQhti1cIy35Rgd/exec";
 
-/* ================= CATÁLOGO ================= */
+/* PANES */
 const panes = [
-"Pan con Pollo","Pan con Queso","Pan con Palta","Pan Torreja","Pan Hot Dog",
-"Pan Lomo","Pan Jamón Queso","Pan Aceituna","Pan Hotdog Papa","Pan Pescado",
-"Pan Arrebosado","Pan Hamburguesa","Pan Atún","Pan Camote","Pan Huevo"
+"Pan con Pollo","Pan con Queso","Pan con Palta","Pan Torreja",
+"Pan Hot Dog","Pan Lomo","Pan Jamón Queso","Pan Aceituna",
+"Pan Hotdog Papa","Pan Pescado","Pan Arrebosado",
+"Pan Hamburguesa","Pan Atún","Pan Camote","Pan Huevo"
 ];
 
+/* BEBIDAS */
 const bebidas = [
 {n:"Quinua",p:1.5},
 {n:"Maca",p:1.5},
@@ -105,11 +109,11 @@ const bebidas = [
 
 const precioPan = 1.5;
 
-/* ================= RENDER ================= */
 const divP = document.getElementById("panes");
 const divB = document.getElementById("bebidas");
 
-panes.forEach((p,i)=>{
+/* RENDER PANES */
+panes.forEach((p)=>{
 divP.innerHTML += `
 <div class="item">
 <span>${p}</span>
@@ -122,10 +126,11 @@ divP.innerHTML += `
 </div>`;
 });
 
-bebidas.forEach((b,i)=>{
+/* RENDER BEBIDAS */
+bebidas.forEach((b)=>{
 divB.innerHTML += `
 <div class="item">
-<span>${b.n}</span>
+<span>${b.n} - S/${b.p}</span>
 <div>
 <button onclick="cb(this,-1)">-</button>
 <span>0</span>
@@ -135,13 +140,15 @@ divB.innerHTML += `
 </div>`;
 });
 
-/* ================= CAMBIOS ================= */
+/* CAMBIOS */
 function cp(btn,o){
 let d=btn.parentElement;
 let i=d.querySelector("input");
 let s=d.querySelector("span");
-i.value=Math.max(0,parseInt(i.value)+o);
+
+i.value=Math.max(0,Number(i.value)+o);
 s.innerText=i.value;
+
 calc();
 }
 
@@ -149,80 +156,86 @@ function cb(btn,o){
 let d=btn.parentElement;
 let i=d.querySelector("input");
 let s=d.querySelector("span");
-i.value=Math.max(0,parseInt(i.value)+o);
+
+i.value=Math.max(0,Number(i.value)+o);
 s.innerText=i.value;
+
 calc();
 }
 
-/* ================= TOTAL (CORREGIDO DEFINITIVO) ================= */
+/* TOTAL */
 function calc(){
 
 let total = 0;
 
-// panes
 document.querySelectorAll("#panes input").forEach(i=>{
-total += Number(i.value) * precioPan;
+total += Number(i.value)*precioPan;
 });
 
-// bebidas
 document.querySelectorAll("#bebidas input").forEach((i,x)=>{
-total += Number(i.value) * bebidas[x].p;
+total += Number(i.value)*bebidas[x].p;
 });
 
-// pan integral (SEGURO)
-let radios = document.getElementsByName("tipoPan");
+let tipo = document.querySelector('input[name="tipoPan"]:checked').value;
 
-for(let i=0;i<radios.length;i++){
-if(radios[i].checked){
-total += Number(radios[i].value);
-break;
-}
+if(tipo.includes("Integral")){
+total += 0.30;
 }
 
-document.getElementById("total").innerText = "S/" + total.toFixed(2);
+document.getElementById("total").innerText="S/"+total.toFixed(2);
 }
 
-/* ================= EVENTO RADIO ================= */
+/* RADIO */
 document.querySelectorAll('input[name="tipoPan"]').forEach(r=>{
-r.addEventListener("change", calc);
+r.addEventListener("change",calc);
 });
 
-/* ================= ENVÍO ================= */
-let bloqueado = false;
+/* ENVÍO */
+let bloqueado=false;
 
 async function enviar(){
 
 if(bloqueado) return;
-bloqueado = true;
 
-let btn = document.getElementById("btnEnviar");
-btn.innerText = "Enviando...";
+bloqueado=true;
 
-let nombre = document.getElementById("nombre").value;
+let btn=document.getElementById("btnEnviar");
+btn.innerText="Enviando...";
+
+let nombre=document.getElementById("nombre").value.trim();
 
 if(!nombre){
-bloqueado = false;
-btn.innerText = "Confirmar Pedido";
-return alert("Ingresa nombre");
+alert("Ingresa tu nombre");
+btn.innerText="Confirmar Pedido";
+bloqueado=false;
+return;
 }
 
-let p = [];
-let b = [];
+let p=[];
+let b=[];
 
+/* PANES */
 document.querySelectorAll("#panes input").forEach((i,x)=>{
-if(i.value > 0){
-p.push({nombre:panes[x],cantidad:i.value});
+if(Number(i.value)>0){
+p.push({
+nombre:panes[x],
+cantidad:Number(i.value)
+});
 }
 });
 
+/* BEBIDAS */
 document.querySelectorAll("#bebidas input").forEach((i,x)=>{
-if(i.value > 0){
-b.push({nombre:bebidas[x].n,cantidad:i.value});
+if(Number(i.value)>0){
+b.push({
+nombre:bebidas[x].n,
+cantidad:Number(i.value)
+});
 }
 });
 
-let tipo = document.querySelector('input[name="tipoPan"]:checked').value;
-let total = document.getElementById("total").innerText;
+let tipoPan=document.querySelector('input[name="tipoPan"]:checked').value;
+let total=document.getElementById("total").innerText;
 
 await fetch(URL,{
 method:"POST",
@@ -230,34 +243,15 @@ body:JSON.stringify({
 nombre,
 panes:p,
 bebidas:b,
-tipoPan:tipo,
+tipoPan,
 total
 })
 });
 
-btn.innerText = "Pedido enviado";
+btn.innerText="Pedido enviado";
 
 setTimeout(()=>{
-
-btn.innerText = "Confirmar Pedido";
-bloqueado = false;
-
-document.getElementById("nombre").value = "";
-
-document.querySelectorAll("#panes input").forEach(i=>{
-i.value = 0;
-i.parentElement.querySelector("span").innerText = 0;
-});
-
-document.querySelectorAll("#bebidas input").forEach(i=>{
-i.value = 0;
-i.parentElement.querySelector("span").innerText = 0;
-});
-
-document.querySelector('input[name="tipoPan"][value="0"]').checked = true;
-
-calc();
-
+location.reload();
 },1500);
 
 }
@@ -265,6 +259,5 @@ calc();
 calc();
 
 </script>
-
 </body>
 </html>
