@@ -22,7 +22,10 @@ border-radius:15px;
 box-shadow:0 4px 15px rgba(0,0,0,0.1);
 }
 
-h1{text-align:center;color:#e85d04;}
+h1{
+text-align:center;
+color:#e85d04;
+}
 
 .item{
 display:flex;
@@ -71,8 +74,15 @@ font-weight:bold;
 <div id="bebidas"></div>
 
 <h3>Tipo de pan</h3>
-<label><input type="radio" name="tipoPan" value="Tradicional" checked> Tradicional</label>
-<label><input type="radio" name="tipoPan" value="Integral (+S/0.30)"> Integral (+S/0.30)</label>
+<label>
+<input type="radio" name="tipoPan" value="Tradicional" checked>
+Tradicional
+</label>
+
+<label>
+<input type="radio" name="tipoPan" value="Integral (+S/0.30)">
+Integral (+S/0.30)
+</label>
 
 <h3>Total</h3>
 <div class="total" id="total">S/0.00</div>
@@ -88,10 +98,21 @@ const URL = "https://script.google.com/macros/s/AKfycbxqZhTuE30H7JlxlwoDma1v4Sh8
 
 /* PANES */
 const panes = [
-"Pan con Pollo","Pan con Queso","Pan con Palta","Pan Torreja",
-"Pan Hot Dog","Pan Lomo","Pan Jamón Queso","Pan Aceituna",
-"Pan Hotdog Papa","Pan Pescado","Pan Arrebosado",
-"Pan Hamburguesa","Pan Atún","Pan Camote","Pan Huevo"
+"Pan con Pollo",
+"Pan con Queso",
+"Pan con Palta",
+"Pan Torreja",
+"Pan Hot Dog",
+"Pan Lomo",
+"Pan Jamón Queso",
+"Pan Aceituna",
+"Pan Hotdog Papa",
+"Pan Pescado",
+"Pan Arrebosado",
+"Pan Hamburguesa",
+"Pan Atún",
+"Pan Camote",
+"Pan Huevo"
 ];
 
 /* BEBIDAS */
@@ -123,7 +144,8 @@ divP.innerHTML += `
 <button onclick="cp(this,1)">+</button>
 <input type="hidden" value="0">
 </div>
-</div>`;
+</div>
+`;
 });
 
 /* RENDER BEBIDAS */
@@ -137,28 +159,30 @@ divB.innerHTML += `
 <button onclick="cb(this,1)">+</button>
 <input type="hidden" value="0">
 </div>
-</div>`;
+</div>
+`;
 });
 
-/* CAMBIOS */
+/* PANES */
 function cp(btn,o){
-let d=btn.parentElement;
-let i=d.querySelector("input");
-let s=d.querySelector("span");
+let d = btn.parentElement;
+let i = d.querySelector("input");
+let s = d.querySelector("span");
 
-i.value=Math.max(0,Number(i.value)+o);
-s.innerText=i.value;
+i.value = Math.max(0, Number(i.value)+o);
+s.innerText = i.value;
 
 calc();
 }
 
+/* BEBIDAS */
 function cb(btn,o){
-let d=btn.parentElement;
-let i=d.querySelector("input");
-let s=d.querySelector("span");
+let d = btn.parentElement;
+let i = d.querySelector("input");
+let s = d.querySelector("span");
 
-i.value=Math.max(0,Number(i.value)+o);
-s.innerText=i.value;
+i.value = Math.max(0, Number(i.value)+o);
+s.innerText = i.value;
 
 calc();
 }
@@ -168,78 +192,86 @@ function calc(){
 
 let total = 0;
 
+/* PANES */
 document.querySelectorAll("#panes input").forEach(i=>{
-total += Number(i.value)*precioPan;
+total += Number(i.value) * precioPan;
 });
 
+/* BEBIDAS */
 document.querySelectorAll("#bebidas input").forEach((i,x)=>{
-total += Number(i.value)*bebidas[x].p;
+total += Number(i.value) * bebidas[x].p;
 });
 
+/* PAN INTEGRAL */
 let tipo = document.querySelector('input[name="tipoPan"]:checked').value;
 
 if(tipo.includes("Integral")){
 total += 0.30;
 }
 
-document.getElementById("total").innerText="S/"+total.toFixed(2);
+document.getElementById("total").innerText =
+"S/" + total.toFixed(2);
+
 }
 
 /* RADIO */
 document.querySelectorAll('input[name="tipoPan"]').forEach(r=>{
-r.addEventListener("change",calc);
+r.addEventListener("change", calc);
 });
 
-/* ENVÍO */
-let bloqueado=false;
+/* ENVIAR */
+let bloqueado = false;
 
 async function enviar(){
 
 if(bloqueado) return;
 
-bloqueado=true;
+bloqueado = true;
 
-let btn=document.getElementById("btnEnviar");
-btn.innerText="Enviando...";
+let btn = document.getElementById("btnEnviar");
+btn.innerText = "Enviando...";
 
-let nombre=document.getElementById("nombre").value.trim();
+let nombre = document.getElementById("nombre").value.trim();
 
 if(!nombre){
 alert("Ingresa tu nombre");
-btn.innerText="Confirmar Pedido";
-bloqueado=false;
+btn.innerText = "Confirmar Pedido";
+bloqueado = false;
 return;
 }
 
-let p=[];
-let b=[];
+let p = [];
+let b = [];
 
 /* PANES */
 document.querySelectorAll("#panes input").forEach((i,x)=>{
-if(Number(i.value)>0){
+if(Number(i.value) > 0){
 p.push({
-nombre:panes[x],
-cantidad:Number(i.value)
+nombre: panes[x],
+cantidad: Number(i.value)
 });
 }
 });
 
 /* BEBIDAS */
 document.querySelectorAll("#bebidas input").forEach((i,x)=>{
-if(Number(i.value)>0){
+if(Number(i.value) > 0){
 b.push({
-nombre:bebidas[x].n,
-cantidad:Number(i.value)
+nombre: bebidas[x].n,
+cantidad: Number(i.value)
 });
 }
 });
 
-let tipoPan=document.querySelector('input[name="tipoPan"]:checked').value;
-let total=document.getElementById("total").innerText;
+let tipoPan = document.querySelector('input[name="tipoPan"]:checked').value;
+let total = document.getElementById("total").innerText;
 
 await fetch(URL,{
 method:"POST",
-body:JSON.stringify({
+headers:{
+"Content-Type":"application/json"
+},
+body: JSON.stringify({
 nombre,
 panes:p,
 bebidas:b,
@@ -248,8 +280,9 @@ total
 })
 });
 
-btn.innerText="Pedido enviado";
+btn.innerText = "Pedido enviado";
 
+/* RECARGA AUTOMÁTICA */
 setTimeout(()=>{
 location.reload();
 },1500);
@@ -259,5 +292,6 @@ location.reload();
 calc();
 
 </script>
+
 </body>
 </html>
