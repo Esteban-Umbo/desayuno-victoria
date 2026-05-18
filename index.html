@@ -1,310 +1,234 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Desayuno Victoria</title>
-
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Vista previa - Desayuno Victoria</title>
 <style>
+:root{
+  --naranja:#e85d04;
+  --verde:#2a9d8f;
+  --crema:#fff8ef;
+  --amarillo:#fff3cd;
+  --marron:#5c2e0f;
+  --rojo:#d62828;
+}
+*{box-sizing:border-box}
 body{
-font-family: Arial;
-background:#fff8ef;
-margin:0;
-padding:20px;
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(180deg,#fff8ef,#fff1dc);
+  color:#222;
 }
-
-.container{
-max-width:900px;
-margin:auto;
-background:white;
-padding:20px;
-border-radius:15px;
-box-shadow:0 4px 15px rgba(0,0,0,0.1);
+.app{
+  max-width:1100px;
+  margin:auto;
+  padding:16px;
 }
-
-h1{
-text-align:center;
-color:#e85d04;
+.hero{
+  background:linear-gradient(135deg,#fff,#ffe1b8);
+  border-radius:24px;
+  padding:24px;
+  box-shadow:0 12px 30px rgba(0,0,0,.12);
+  text-align:center;
+  margin-bottom:18px;
 }
-
-.item{
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#fff3cd;
-padding:12px;
-margin:8px 0;
-border-radius:10px;
+.hero h1{
+  margin:0;
+  color:var(--naranja);
+  font-size:42px;
 }
-
-button{
-background:#2a9d8f;
-color:white;
-border:none;
-padding:10px 15px;
-border-radius:8px;
-cursor:pointer;
+.hero p{
+  margin:8px 0 0;
+  color:var(--marron);
+  font-weight:bold;
 }
-
-button:hover{
-background:#21867a;
+.form-card{
+  background:#fff;
+  border-radius:22px;
+  padding:20px;
+  box-shadow:0 8px 25px rgba(0,0,0,.08);
+  margin-bottom:18px;
 }
-
+label.title{
+  display:block;
+  font-weight:bold;
+  margin-bottom:8px;
+  font-size:18px;
+}
+input[type="text"]{
+  width:100%;
+  padding:15px;
+  border-radius:14px;
+  border:2px solid #eee;
+  font-size:16px;
+  outline:none;
+}
+input[type="text"]:focus{border-color:var(--verde)}
+.section-title{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:24px 0 12px;
+}
+.section-title h2{
+  margin:0;
+  color:var(--marron);
+}
+.badge{
+  background:var(--naranja);
+  color:white;
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:bold;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:14px;
+}
+.product{
+  background:var(--amarillo);
+  border-radius:18px;
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  min-height:120px;
+  border:1px solid #ffe29a;
+}
+.product strong{font-size:17px}
+.price{color:var(--rojo);font-weight:bold}
+.controls{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+.qty{
+  font-size:22px;
+  font-weight:bold;
+}
+.btn{
+  border:none;
+  background:var(--verde);
+  color:white;
+  border-radius:12px;
+  width:44px;
+  height:44px;
+  font-size:20px;
+  cursor:pointer;
+}
+.tipo-pan{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+}
+.option{
+  flex:1;
+  min-width:180px;
+  background:#fff7df;
+  border:2px solid #ffe29a;
+  border-radius:16px;
+  padding:14px;
+  cursor:pointer;
+  font-weight:bold;
+}
+.summary{
+  position:sticky;
+  bottom:12px;
+  background:#fff;
+  border-radius:22px;
+  padding:16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  box-shadow:0 12px 30px rgba(0,0,0,.2);
+  margin-top:20px;
+}
 .total{
-font-size:28px;
-color:red;
-font-weight:bold;
+  font-size:30px;
+  color:var(--rojo);
+  font-weight:bold;
 }
-
-.contador{
-margin:0 10px;
-font-weight:bold;
+.send{
+  background:var(--naranja);
+  color:white;
+  border:none;
+  padding:16px 22px;
+  border-radius:16px;
+  font-weight:bold;
+  font-size:16px;
+  cursor:pointer;
+}
+@media(max-width:600px){
+  .hero h1{font-size:32px}
+  .summary{flex-direction:column;align-items:stretch}
+  .send{width:100%}
 }
 </style>
 </head>
-
 <body>
+<div class="app">
+  <div class="hero">
+    <h1>🍽️ Desayuno Victoria</h1>
+    <p>Empieza tu día con el sabor del triunfo</p>
+  </div>
 
-<div class="container">
+  <div class="form-card">
+    <label class="title">Nombre del cliente</label>
+    <input type="text" placeholder="Escribe tu nombre" />
 
-<h1>🍽️ Desayuno Victoria</h1>
+    <div class="section-title">
+      <h2>🥪 Nuestros sándwiches</h2>
+      <span class="badge">S/ 1.50 c/u</span>
+    </div>
 
-<h3>Nombre</h3>
-<input id="nombre" style="width:100%;padding:10px;">
+    <div class="grid">
+      <div class="product"><strong>Pan con Pollo</strong><span class="price">S/ 1.50</span><div class="controls"><button class="btn">−</button><span class="qty">0</span><button class="btn">+</button></div></div>
+      <div class="product"><strong>Pan con Queso</strong><span class="price">S/ 1.50</span><div class="controls"><button class="btn">−</button><span class="qty">0</span><button class="btn">+</button></div></div>
+      <div class="product"><strong>Pan con Palta</strong><span class="price">S/ 1.50</span><div class="controls"><button class="btn">−</button><span class="qty">0</span><button class="btn">+</button></div></div>
+      <div class="product"><strong>Pan Hot Dog</strong><span class="price">S/ 1.50</span><div class="controls"><button class="btn">−</button><span class="qty">0</span><button class="btn">+</button></div></div>
+    </div>
 
-<h3>Panes (S/1.50 c/u)</h3>
-<div id="panes"></div>
+    <div class="section-title">
+      <h2>☕ Bebidas calientitas</h2>
+      <span class="badge">S/ 1.50 c/u</span>
+    </div>
 
-<h3>Bebidas</h3>
-<div id="bebidas"></div>
+    <div class="grid">
+      <div class="product"><strong>Quinua</strong><span class="price">S/ 1.50</span><div class="controls"><button class="btn">−</button><span class="qty">0</span><button class="btn">+</button></div></div>
+      <div class="product"><strong>Maca</strong><span class="price">S/ 1.50</span><div class="controls"><button class="btn">−</button><span class="qty">0</span><button class="btn">+</button></div></div>
+      <div class="product"><strong>Ponche</strong><span class="price">S/ 1.50</span><div class="controls"><button class="btn">−</button><span class="qty">0</span><button class="btn">+</button></div></div>
+      <div class="product"><strong>Café</strong><span class="price">S/ 1.50</span><div class="controls"><button class="btn">−</button><span class="qty">0</span><button class="btn">+</button></div></div>
+    </div>
 
-<h3>Tipo de pan</h3>
+    <div class="section-title">
+      <h2>🥤 Jugos naturales</h2>
+      <span class="badge">S/ 2.00 c/u</span>
+    </div>
 
-<label>
-<input type="radio" name="tipoPan" value="Tradicional" checked>
-Tradicional
-</label>
+    <div class="grid">
+      <div class="product"><strong>Papaya</strong><span class="price">S/ 2.00</span><div class="controls"><button class="btn">−</button><span class="qty">0</span><button class="btn">+</button></div></div>
+    </div>
 
-<label>
-<input type="radio" name="tipoPan" value="Integral (+S/0.30)">
-Integral (+S/0.30)
-</label>
+    <div class="section-title">
+      <h2>🥖 Tipo de pan</h2>
+    </div>
+    <div class="tipo-pan">
+      <label class="option"><input type="radio" checked /> Tradicional</label>
+      <label class="option"><input type="radio" /> Integral + S/0.30</label>
+    </div>
 
-<h3>Total</h3>
-<div class="total" id="total">S/0.00</div>
-
-<br>
-
-<button id="btnEnviar" onclick="enviar()">
-Confirmar Pedido
-</button>
-
+    <div class="summary">
+      <div>
+        <div>Resumen del pedido</div>
+        <div class="total">S/ 0.00</div>
+      </div>
+      <button class="send">Confirmar pedido ✅</button>
+    </div>
+  </div>
 </div>
-
-<script>
-
-const URL = "https://script.google.com/macros/s/AKfycbxqZhTuE30H7JlxlwoDma1v4Sh8qxpjWcyprsSsUSSuphFslPi5S6RQhti1cIy35Rgd/exec";
-
-/* PANES */
-const panes = [
-"Pan con Pollo",
-"Pan con Queso",
-"Pan con Palta",
-"Pan Torreja",
-"Pan Hot Dog",
-"Pan Lomo",
-"Pan Jamón Queso",
-"Pan Aceituna",
-"Pan Hotdog Papa",
-"Pan Pescado",
-"Pan Arrebosado",
-"Pan Hamburguesa",
-"Pan Atún",
-"Pan Camote",
-"Pan Huevo"
-];
-
-/* BEBIDAS */
-const bebidas = [
-{n:"Quinua",p:1.5},
-{n:"Maca",p:1.5},
-{n:"Ponche",p:1.5},
-{n:"Avena",p:1.5},
-{n:"Café",p:1.5},
-{n:"Muña",p:1.5},
-{n:"Manzanilla",p:1.5},
-{n:"Anís",p:1.5},
-{n:"Papaya",p:2}
-];
-
-const precioPan = 1.5;
-
-const divP = document.getElementById("panes");
-const divB = document.getElementById("bebidas");
-
-/* RENDER PANES */
-panes.forEach((p,i)=>{
-divP.innerHTML += `
-<div class="item">
-<span>${p}</span>
-<div>
-<button type="button" onclick="cambiarPan(${i},-1)">-</button>
-<span class="contador" id="pan${i}">0</span>
-<button type="button" onclick="cambiarPan(${i},1)">+</button>
-</div>
-</div>
-`;
-});
-
-/* RENDER BEBIDAS */
-bebidas.forEach((b,i)=>{
-divB.innerHTML += `
-<div class="item">
-<span>${b.n} - S/${b.p}</span>
-<div>
-<button type="button" onclick="cambiarBebida(${i},-1)">-</button>
-<span class="contador" id="bebida${i}">0</span>
-<button type="button" onclick="cambiarBebida(${i},1)">+</button>
-</div>
-</div>
-`;
-});
-
-let cantidadesPan = new Array(panes.length).fill(0);
-let cantidadesBebida = new Array(bebidas.length).fill(0);
-
-/* PANES */
-function cambiarPan(i,valor){
-cantidadesPan[i] = Math.max(0,cantidadesPan[i]+valor);
-document.getElementById("pan"+i).innerText = cantidadesPan[i];
-calc();
-}
-
-/* BEBIDAS */
-function cambiarBebida(i,valor){
-cantidadesBebida[i] = Math.max(0,cantidadesBebida[i]+valor);
-document.getElementById("bebida"+i).innerText = cantidadesBebida[i];
-calc();
-}
-
-/* TOTAL */
-function calc(){
-
-let total = 0;
-
-/* PANES */
-cantidadesPan.forEach(c=>{
-total += c * precioPan;
-});
-
-/* BEBIDAS */
-cantidadesBebida.forEach((c,i)=>{
-total += c * bebidas[i].p;
-});
-
-/* PAN INTEGRAL */
-let tipo = document.querySelector('input[name="tipoPan"]:checked').value;
-
-if(tipo.includes("Integral")){
-total += 0.30;
-}
-
-document.getElementById("total").innerText =
-"S/" + total.toFixed(2);
-}
-
-/* RADIO */
-document.querySelectorAll('input[name="tipoPan"]').forEach(r=>{
-r.addEventListener("change", calc);
-});
-
-let bloqueado = false;
-
-/* ENVIAR */
-async function enviar(){
-
-if(bloqueado) return;
-
-let nombre = document.getElementById("nombre").value.trim();
-
-if(!nombre){
-alert("Ingresa tu nombre");
-return;
-}
-
-let p = [];
-let b = [];
-
-/* PANES */
-cantidadesPan.forEach((cantidad,i)=>{
-if(cantidad > 0){
-p.push({
-nombre: panes[i],
-cantidad: cantidad
-});
-}
-});
-
-/* BEBIDAS */
-cantidadesBebida.forEach((cantidad,i)=>{
-if(cantidad > 0){
-b.push({
-nombre: bebidas[i].n,
-cantidad: cantidad
-});
-}
-});
-
-if(p.length === 0 && b.length === 0){
-alert("Selecciona al menos un producto");
-return;
-}
-
-bloqueado = true;
-
-let btn = document.getElementById("btnEnviar");
-btn.innerText = "Enviando...";
-
-let tipoPan = document.querySelector('input[name="tipoPan"]:checked').value;
-let total = document.getElementById("total").innerText;
-
-try{
-
-const response = await fetch(URL,{
-method:"POST",
-body: JSON.stringify({
-nombre,
-panes:p,
-bebidas:b,
-tipoPan,
-total
-})
-});
-
-if(response.ok){
-btn.innerText = "Pedido enviado ✅";
-
-setTimeout(()=>{
-location.reload();
-},700);
-
-}else{
-throw new Error("Error");
-}
-
-}catch(error){
-
-alert("Error al enviar pedido");
-btn.innerText = "Confirmar Pedido";
-bloqueado = false;
-
-}
-
-}
-
-calc();
-
-</script>
-
 </body>
 </html>
