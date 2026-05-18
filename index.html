@@ -222,16 +222,16 @@ const panes = [
 "Pan con Palta",
 "Pan con Torreja de Verdura",
 "Pan con Tortilla de Hotdog",
-"Pan Lomo",
-"Pan Jamón Queso",
-"Pan Aceituna",
-"Pan Hotdog Papa",
-"Pan Pescado",
-"Pan Arrebosado",
-"Pan Hamburguesa",
-"Pan Atún",
-"Pan Camote",
-"Pan Huevo"
+"Pan con Lomo",
+"Pan con Jamón Queso",
+"Pan con Aceituna",
+"Pan con Hotdog Papa",
+"Pan con Pescado",
+"Pan con Arrebosado",
+"Pan con Hamburguesa",
+"Pan con Atún",
+"Pan con Camote",
+"Pan con Huevo"
 ];
 
 const bebidas = [
@@ -254,18 +254,24 @@ const divB = document.getElementById("bebidas");
 panes.forEach((p,i)=>{
 divP.innerHTML += `
 <div class="item">
+
 <div class="nombre">${p}</div>
+
 <div class="precio">S/1.50</div>
+
 <div class="controls">
 <button class="btn" onclick="cambiarPan(${i},-1)">−</button>
+
 <span class="contador" id="pan${i}">0</span>
+
 <button class="btn" onclick="cambiarPan(${i},1)">+</button>
 </div>
 
 <input 
 id="obsPan${i}" 
-placeholder="Observación: sin cebolla, con ají, etc."
+placeholder="Con o sin ají, ensalada, cebolla, etc."
 >
+
 </div>
 `;
 });
@@ -273,13 +279,19 @@ placeholder="Observación: sin cebolla, con ají, etc."
 bebidas.forEach((b,i)=>{
 divB.innerHTML += `
 <div class="item">
+
 <div class="nombre">${b.n}</div>
+
 <div class="precio">S/${b.p.toFixed(2)}</div>
+
 <div class="controls">
 <button class="btn" onclick="cambiarBebida(${i},-1)">−</button>
+
 <span class="contador" id="bebida${i}">0</span>
+
 <button class="btn" onclick="cambiarBebida(${i},1)">+</button>
 </div>
+
 </div>
 `;
 });
@@ -315,6 +327,7 @@ document.getElementById("total").innerText = "S/" + total.toFixed(2);
 }
 
 async function enviar(){
+
 if(bloqueado) return;
 
 let nombre = document.getElementById("nombre").value.trim();
@@ -328,22 +341,30 @@ let p = [];
 let b = [];
 
 cantidadesPan.forEach((cantidad,i)=>{
+
 if(cantidad > 0){
+
 p.push({
 nombre: panes[i],
 cantidad: cantidad,
 observacion: document.getElementById("obsPan" + i).value.trim()
 });
+
 }
+
 });
 
 cantidadesBebida.forEach((cantidad,i)=>{
+
 if(cantidad > 0){
+
 b.push({
 nombre: bebidas[i].n,
 cantidad: cantidad
 });
+
 }
+
 });
 
 if(p.length === 0 && b.length === 0){
@@ -354,12 +375,15 @@ return;
 bloqueado = true;
 
 let btn = document.getElementById("btnEnviar");
+
 btn.innerText = "Enviando...";
 
 let tipoPan = "Tradicional";
+
 let total = document.getElementById("total").innerText;
 
 try{
+
 const response = await fetch(URL,{
 method:"POST",
 body: JSON.stringify({
@@ -372,6 +396,7 @@ total
 });
 
 if(response.ok){
+
 btn.innerText = "Pedido enviado ✅";
 
 setTimeout(()=>{
@@ -383,10 +408,15 @@ throw new Error("Error");
 }
 
 }catch(error){
+
 alert("Error al enviar pedido");
+
 btn.innerText = "Confirmar Pedido ✅";
+
 bloqueado = false;
+
 }
+
 }
 
 calc();
