@@ -7,7 +7,6 @@
 <title>Desayuno Victoria</title>
 
 <style>
-
 *{
 box-sizing:border-box;
 margin:0;
@@ -127,22 +126,6 @@ font-size:22px;
 font-weight:bold;
 }
 
-.tipo-pan{
-display:flex;
-gap:15px;
-flex-wrap:wrap;
-margin-top:15px;
-}
-
-.option{
-background:#fff3cd;
-padding:15px;
-border-radius:15px;
-border:2px solid #ffe69c;
-flex:1;
-min-width:180px;
-}
-
 .total-box{
 position:sticky;
 bottom:10px;
@@ -177,7 +160,6 @@ background:#d35400;
 }
 
 @media(max-width:700px){
-
 .header h1{
 font-size:30px;
 }
@@ -190,9 +172,7 @@ align-items:stretch;
 .enviar{
 width:100%;
 }
-
 }
-
 </style>
 </head>
 
@@ -206,85 +186,42 @@ width:100%;
 </div>
 
 <div class="card">
-
 <div class="titulo">👤 Nombre del cliente</div>
-
 <input id="nombre" placeholder="Ingresa tu nombre">
-
 </div>
 
 <div class="card">
-
-<div class="titulo">
-🥪 Panes (S/1.50)
-</div>
-
+<div class="titulo">🥪 Panes (S/1.50)</div>
 <div class="grid" id="panes"></div>
-
 </div>
 
 <div class="card">
-
-<div class="titulo">
-☕ Bebidas
-</div>
-
+<div class="titulo">☕ Bebidas</div>
 <div class="grid" id="bebidas"></div>
-
-</div>
-
-<div class="card">
-
-<div class="titulo">
-🥖 Tipo de pan
-</div>
-
-<div class="tipo-pan">
-
-<label class="option">
-<input type="radio" name="tipoPan" value="Tradicional" checked>
-Tradicional
-</label>
-
-<label class="option">
-<input type="radio" name="tipoPan" value="Integral (+S/0.30)">
-Integral (+S/0.30)
-</label>
-
-</div>
-
 </div>
 
 <div class="total-box">
-
 <div>
-
 <div>Total del pedido</div>
-
-<div class="total" id="total">
-S/0.00
-</div>
-
+<div class="total" id="total">S/0.00</div>
 </div>
 
 <button class="enviar" id="btnEnviar" onclick="enviar()">
 Confirmar Pedido ✅
 </button>
-
 </div>
 
 </div>
 
 <script>
-
 const URL = "https://script.google.com/macros/s/AKfycbxqZhTuE30H7JlxlwoDma1v4Sh8qxpjWcyprsSsUSSuphFslPi5S6RQhti1cIy35Rgd/exec";
 
-/* PANES */
 const panes = [
 "Pan con Pollo",
 "Pan con Queso",
 "Pan con Palta",
-"Pan Torreja",
+"Pan con Torreja de Verdura",
+"Pan con Tortilla de Hotdog",
 "Pan Lomo",
 "Pan Jamón Queso",
 "Pan Aceituna",
@@ -297,7 +234,6 @@ const panes = [
 "Pan Huevo"
 ];
 
-/* BEBIDAS */
 const bebidas = [
 {n:"Quinua",p:1.5},
 {n:"Maca",p:1.5},
@@ -316,98 +252,50 @@ const divP = document.getElementById("panes");
 const divB = document.getElementById("bebidas");
 
 panes.forEach((p,i)=>{
-
 divP.innerHTML += `
 <div class="item">
-
 <div class="nombre">${p}</div>
-
-<div class="precio">
-S/1.50
-</div>
-
+<div class="precio">S/1.50</div>
 <div class="controls">
-
-<button class="btn" onclick="cambiarPan(${i},-1)">
-−
-</button>
-
-<span class="contador" id="pan${i}">
-0
-</span>
-
-<button class="btn" onclick="cambiarPan(${i},1)">
-+
-</button>
-
+<button class="btn" onclick="cambiarPan(${i},-1)">−</button>
+<span class="contador" id="pan${i}">0</span>
+<button class="btn" onclick="cambiarPan(${i},1)">+</button>
 </div>
-
 </div>
 `;
-
 });
 
 bebidas.forEach((b,i)=>{
-
 divB.innerHTML += `
 <div class="item">
-
 <div class="nombre">${b.n}</div>
-
-<div class="precio">
-S/${b.p}
-</div>
-
+<div class="precio">S/${b.p.toFixed(2)}</div>
 <div class="controls">
-
-<button class="btn" onclick="cambiarBebida(${i},-1)">
-−
-</button>
-
-<span class="contador" id="bebida${i}">
-0
-</span>
-
-<button class="btn" onclick="cambiarBebida(${i},1)">
-+
-</button>
-
+<button class="btn" onclick="cambiarBebida(${i},-1)">−</button>
+<span class="contador" id="bebida${i}">0</span>
+<button class="btn" onclick="cambiarBebida(${i},1)">+</button>
 </div>
-
 </div>
 `;
-
 });
 
 let cantidadesPan = new Array(panes.length).fill(0);
 let cantidadesBebida = new Array(bebidas.length).fill(0);
+let bloqueado = false;
 
 function cambiarPan(i,valor){
-
-cantidadesPan[i] =
-Math.max(0,cantidadesPan[i]+valor);
-
-document.getElementById("pan"+i).innerText =
-cantidadesPan[i];
-
+cantidadesPan[i] = Math.max(0,cantidadesPan[i] + valor);
+document.getElementById("pan" + i).innerText = cantidadesPan[i];
 calc();
-
 }
 
 function cambiarBebida(i,valor){
-
-cantidadesBebida[i] =
-Math.max(0,cantidadesBebida[i]+valor);
-
-document.getElementById("bebida"+i).innerText =
-cantidadesBebida[i];
-
+cantidadesBebida[i] = Math.max(0,cantidadesBebida[i] + valor);
+document.getElementById("bebida" + i).innerText = cantidadesBebida[i];
 calc();
-
 }
 
 function calc(){
-
 let total = 0;
 
 cantidadesPan.forEach(c=>{
@@ -418,89 +306,54 @@ cantidadesBebida.forEach((c,i)=>{
 total += c * bebidas[i].p;
 });
 
-let tipo =
-document.querySelector('input[name="tipoPan"]:checked').value;
-
-if(tipo.includes("Integral")){
-total += 0.30;
+document.getElementById("total").innerText = "S/" + total.toFixed(2);
 }
-
-document.getElementById("total").innerText =
-"S/" + total.toFixed(2);
-
-}
-
-document.querySelectorAll('input[name="tipoPan"]').forEach(r=>{
-r.addEventListener("change", calc);
-});
-
-let bloqueado = false;
 
 async function enviar(){
-
 if(bloqueado) return;
 
-let nombre =
-document.getElementById("nombre").value.trim();
+let nombre = document.getElementById("nombre").value.trim();
 
 if(!nombre){
-
 alert("Ingresa tu nombre");
 return;
-
 }
 
 let p = [];
 let b = [];
 
 cantidadesPan.forEach((cantidad,i)=>{
-
 if(cantidad > 0){
-
 p.push({
 nombre: panes[i],
 cantidad: cantidad
 });
-
 }
-
 });
 
 cantidadesBebida.forEach((cantidad,i)=>{
-
 if(cantidad > 0){
-
 b.push({
 nombre: bebidas[i].n,
 cantidad: cantidad
 });
-
 }
-
 });
 
 if(p.length === 0 && b.length === 0){
-
 alert("Selecciona al menos un producto");
 return;
-
 }
 
 bloqueado = true;
 
-let btn =
-document.getElementById("btnEnviar");
-
+let btn = document.getElementById("btnEnviar");
 btn.innerText = "Enviando...";
 
-let tipoPan =
-document.querySelector('input[name="tipoPan"]:checked').value;
-
-let total =
-document.getElementById("total").innerText;
+let tipoPan = "Tradicional";
+let total = document.getElementById("total").innerText;
 
 try{
-
 const response = await fetch(URL,{
 method:"POST",
 body: JSON.stringify({
@@ -513,35 +366,24 @@ total
 });
 
 if(response.ok){
-
-btn.innerText =
-"Pedido enviado ✅";
+btn.innerText = "Pedido enviado ✅";
 
 setTimeout(()=>{
 location.reload();
 },700);
 
 }else{
-
 throw new Error("Error");
-
 }
 
 }catch(error){
-
 alert("Error al enviar pedido");
-
-btn.innerText =
-"Confirmar Pedido ✅";
-
+btn.innerText = "Confirmar Pedido ✅";
 bloqueado = false;
-
 }
-
 }
 
 calc();
-
 </script>
 
 </body>
