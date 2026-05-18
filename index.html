@@ -159,99 +159,6 @@ font-weight:bold;
 background:#d35400;
 }
 
-.modal{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.55);
-z-index:999;
-justify-content:center;
-align-items:center;
-padding:15px;
-}
-
-.voucher{
-background:white;
-width:100%;
-max-width:430px;
-border-radius:20px;
-padding:25px;
-box-shadow:0 8px 30px rgba(0,0,0,0.25);
-text-align:left;
-}
-
-.voucher h2{
-text-align:center;
-color:#e85d04;
-margin-bottom:10px;
-}
-
-.subtitulo{
-text-align:center;
-font-size:14px;
-margin-bottom:15px;
-color:#666;
-}
-
-.voucher-contenido{
-background:#fff8ef;
-padding:15px;
-border-radius:15px;
-white-space:pre-line;
-font-size:15px;
-line-height:1.5;
-border:1px dashed #e85d04;
-}
-
-.voucher-link{
-margin-top:15px;
-font-size:14px;
-word-break:break-all;
-}
-
-.voucher-link a{
-color:#e85d04;
-font-weight:bold;
-}
-
-.voucher-botones{
-display:flex;
-gap:10px;
-margin-top:20px;
-flex-wrap:wrap;
-}
-
-.btn-voucher{
-flex:1;
-padding:13px;
-border-radius:12px;
-font-size:15px;
-font-weight:bold;
-color:white;
-}
-
-.btn-descargar{
-background:#2a9d8f;
-}
-
-.btn-wsp{
-background:#25D366;
-}
-
-.btn-nuevo{
-background:#e85d04;
-width:100%;
-margin-top:10px;
-padding:13px;
-border-radius:12px;
-font-size:15px;
-font-weight:bold;
-color:white;
-}
-
 @media(max-width:700px){
 .header h1{
 font-size:30px;
@@ -264,10 +171,6 @@ align-items:stretch;
 
 .enviar{
 width:100%;
-}
-
-.voucher-botones{
-flex-direction:column;
 }
 }
 </style>
@@ -310,38 +213,6 @@ Confirmar Pedido ✅
 
 </div>
 
-<div class="modal" id="modalVoucher">
-<div class="voucher">
-
-<h2>🍽️ Desayuno Victoria</h2>
-
-<div class="subtitulo">
-Mini voucher de pedido
-</div>
-
-<div class="voucher-contenido" id="voucherTexto"></div>
-
-<div class="voucher-link" id="voucherLink"></div>
-
-<div class="voucher-botones">
-
-<button class="btn-voucher btn-descargar" onclick="descargarVoucher()">
-Descargar
-</button>
-
-<button class="btn-voucher btn-wsp" onclick="enviarWhatsApp()">
-Enviar WhatsApp
-</button>
-
-</div>
-
-<button class="btn-nuevo" onclick="location.reload()">
-Nuevo pedido
-</button>
-
-</div>
-</div>
-
 <script>
 
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxqZhTuE30H7JlxlwoDma1v4Sh8qxpjWcyprsSsUSSuphFslPi5S6RQhti1cIy35Rgd/exec";
@@ -381,76 +252,48 @@ const precioPan = 1.5;
 const divP = document.getElementById("panes");
 const divB = document.getElementById("bebidas");
 
+panes.forEach((p,i)=>{
+divP.innerHTML += `
+<div class="item">
+<div class="nombre">${p}</div>
+<div class="precio">S/1.50</div>
+
+<div class="controls">
+<button class="btn" onclick="cambiarPan(${i},-1)">−</button>
+<span class="contador" id="pan${i}">0</span>
+<button class="btn" onclick="cambiarPan(${i},1)">+</button>
+</div>
+</div>
+`;
+});
+
+bebidas.forEach((b,i)=>{
+divB.innerHTML += `
+<div class="item">
+<div class="nombre">${b.n}</div>
+<div class="precio">S/${b.p.toFixed(2)}</div>
+
+<div class="controls">
+<button class="btn" onclick="cambiarBebida(${i},-1)">−</button>
+<span class="contador" id="bebida${i}">0</span>
+<button class="btn" onclick="cambiarBebida(${i},1)">+</button>
+</div>
+</div>
+`;
+});
+
 let cantidadesPan = new Array(panes.length).fill(0);
 let cantidadesBebida = new Array(bebidas.length).fill(0);
 
 let bloqueado = false;
 
-let voucherFinal = "";
-let voucherDriveLink = "";
-
-panes.forEach((p,i)=>{
-
-divP.innerHTML += `
-
-<div class="item">
-
-<div class="nombre">${p}</div>
-
-<div class="precio">S/1.50</div>
-
-<div class="controls">
-
-<button class="btn" onclick="cambiarPan(${i},-1)">−</button>
-
-<span class="contador" id="pan${i}">0</span>
-
-<button class="btn" onclick="cambiarPan(${i},1)">+</button>
-
-</div>
-
-<input 
-id="obsPan${i}" 
-placeholder="Con o sin ají, ensalada, cebolla, etc."
->
-
-</div>
-
-`;
-
-});
-
-bebidas.forEach((b,i)=>{
-
-divB.innerHTML += `
-
-<div class="item">
-
-<div class="nombre">${b.n}</div>
-
-<div class="precio">S/${b.p.toFixed(2)}</div>
-
-<div class="controls">
-
-<button class="btn" onclick="cambiarBebida(${i},-1)">−</button>
-
-<span class="contador" id="bebida${i}">0</span>
-
-<button class="btn" onclick="cambiarBebida(${i},1)">+</button>
-
-</div>
-
-</div>
-
-`;
-
-});
-
 function cambiarPan(i,valor){
 
-cantidadesPan[i] = Math.max(0,cantidadesPan[i] + valor);
+cantidadesPan[i] =
+Math.max(0,cantidadesPan[i] + valor);
 
-document.getElementById("pan" + i).innerText = cantidadesPan[i];
+document.getElementById("pan"+i)
+.innerText = cantidadesPan[i];
 
 calc();
 
@@ -458,9 +301,11 @@ calc();
 
 function cambiarBebida(i,valor){
 
-cantidadesBebida[i] = Math.max(0,cantidadesBebida[i] + valor);
+cantidadesBebida[i] =
+Math.max(0,cantidadesBebida[i] + valor);
 
-document.getElementById("bebida" + i).innerText = cantidadesBebida[i];
+document.getElementById("bebida"+i)
+.innerText = cantidadesBebida[i];
 
 calc();
 
@@ -478,115 +323,8 @@ cantidadesBebida.forEach((c,i)=>{
 total += c * bebidas[i].p;
 });
 
-document.getElementById("total").innerText =
-"S/" + total.toFixed(2);
-
-}
-
-function crearVoucher(nombre, panesPedido, bebidasPedido, total, idPedido, linkVoucher){
-
-let fecha = new Date().toLocaleString("es-PE");
-
-let texto = "";
-
-texto += "============================\n";
-texto += "     DESAYUNO VICTORIA\n";
-texto += "============================\n\n";
-
-texto += "ID Pedido: " + idPedido + "\n";
-
-texto += "Cliente: " + nombre + "\n";
-
-texto += "Fecha: " + fecha + "\n";
-
-texto += "Estado: Pendiente\n\n";
-
-texto += "PEDIDO:\n\n";
-
-panesPedido.forEach(p=>{
-
-texto += "• " + p.nombre + " x" + p.cantidad + "\n";
-
-if(p.observacion){
-
-texto += "  Obs: " + p.observacion + "\n";
-
-}
-
-texto += "\n";
-
-});
-
-bebidasPedido.forEach(b=>{
-
-texto += "• " + b.nombre + " x" + b.cantidad + "\n\n";
-
-});
-
-texto += "----------------------------\n";
-
-texto += "TOTAL: " + total + "\n";
-
-texto += "----------------------------\n\n";
-
-if(linkVoucher){
-
-texto += "Voucher: " + linkVoucher + "\n\n";
-
-}
-
-texto += "Gracias por tu pedido ✅";
-
-return texto;
-
-}
-
-function mostrarVoucher(texto, linkVoucher){
-
-voucherFinal = texto;
-
-voucherDriveLink = linkVoucher || "";
-
-document.getElementById("voucherTexto").innerText = texto;
-
-if(voucherDriveLink){
-
-document.getElementById("voucherLink").innerHTML = `
-Voucher guardado:<br>
-<a href="${voucherDriveLink}" target="_blank">
-Abrir voucher descargable
-</a>
-`;
-
-}else{
-
-document.getElementById("voucherLink").innerHTML = "";
-
-}
-
-document.getElementById("modalVoucher").style.display = "flex";
-
-}
-
-function descargarVoucher(){
-
-if(voucherDriveLink){
-
-window.open(voucherDriveLink, "_blank");
-
-return;
-
-}
-
-}
-
-function enviarWhatsApp(){
-
-let mensaje = encodeURIComponent(voucherFinal);
-
-let link = "https://wa.me/?text=" + mensaje;
-
-window.open(link, "_blank");
+document.getElementById("total")
+.innerText = "S/" + total.toFixed(2);
 
 }
 
@@ -594,7 +332,8 @@ async function enviar(){
 
 if(bloqueado) return;
 
-let nombre = document.getElementById("nombre").value.trim();
+let nombre =
+document.getElementById("nombre").value.trim();
 
 if(!nombre){
 
@@ -613,8 +352,7 @@ if(cantidad > 0){
 
 p.push({
 nombre: panes[i],
-cantidad: cantidad,
-observacion: document.getElementById("obsPan" + i).value.trim()
+cantidad: cantidad
 });
 
 }
@@ -644,13 +382,13 @@ return;
 
 bloqueado = true;
 
-let btn = document.getElementById("btnEnviar");
+let btn =
+document.getElementById("btnEnviar");
 
 btn.innerText = "Enviando...";
 
-let tipoPan = "Tradicional";
-
-let total = document.getElementById("total").innerText;
+let total =
+document.getElementById("total").innerText;
 
 try{
 
@@ -659,53 +397,34 @@ const response = await fetch(SCRIPT_URL,{
 method:"POST",
 
 body: JSON.stringify({
+
 nombre,
 panes:p,
 bebidas:b,
-tipoPan,
+tipoPan:"Tradicional",
 total
+
 })
 
 });
 
-const textoRespuesta = await response.text();
-
-let resultado;
-
-try{
-
-resultado = JSON.parse(textoRespuesta);
-
-}catch(e){
-
-throw new Error(textoRespuesta);
-
-}
-
-if(resultado.status === "OK"){
+if(response.ok){
 
 btn.innerText = "Pedido enviado ✅";
 
-let voucher = crearVoucher(
-nombre,
-p,
-b,
-total,
-resultado.idPedido,
-resultado.voucherUrl
-);
-
-mostrarVoucher(voucher, resultado.voucherUrl);
+setTimeout(()=>{
+location.reload();
+},700);
 
 }else{
 
-throw new Error(resultado.message || "Error");
+throw new Error("Error");
 
 }
 
 }catch(error){
 
-alert("Error al enviar pedido: " + error.message);
+alert("Error al enviar pedido");
 
 btn.innerText = "Confirmar Pedido ✅";
 
