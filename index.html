@@ -41,7 +41,7 @@ button{
 background:#2a9d8f;
 color:white;
 border:none;
-padding:8px 12px;
+padding:10px 15px;
 border-radius:8px;
 cursor:pointer;
 }
@@ -105,6 +105,7 @@ Confirmar Pedido
 
 const URL = "https://script.google.com/macros/s/AKfycbxqZhTuE30H7JlxlwoDma1v4Sh8qxpjWcyprsSsUSSuphFslPi5S6RQhti1cIy35Rgd/exec";
 
+/* PANES */
 const panes = [
 "Pan con Pollo",
 "Pan con Queso",
@@ -123,6 +124,7 @@ const panes = [
 "Pan Huevo"
 ];
 
+/* BEBIDAS */
 const bebidas = [
 {n:"Quinua",p:1.5},
 {n:"Maca",p:1.5},
@@ -140,69 +142,70 @@ const precioPan = 1.5;
 const divP = document.getElementById("panes");
 const divB = document.getElementById("bebidas");
 
-/* CREAR PANES */
-panes.forEach((pan,i)=>{
+/* RENDER PANES */
+panes.forEach((p,i)=>{
 divP.innerHTML += `
 <div class="item">
-<span>${pan}</span>
+<span>${p}</span>
 <div>
-<button type="button" onclick="cambiar('pan',${i},-1)">-</button>
+<button type="button" onclick="cambiarPan(${i},-1)">-</button>
 <span class="contador" id="pan${i}">0</span>
-<button type="button" onclick="cambiar('pan',${i},1)">+</button>
+<button type="button" onclick="cambiarPan(${i},1)">+</button>
 </div>
 </div>
 `;
 });
 
-/* CREAR BEBIDAS */
-bebidas.forEach((bebida,i)=>{
+/* RENDER BEBIDAS */
+bebidas.forEach((b,i)=>{
 divB.innerHTML += `
 <div class="item">
-<span>${bebida.n} - S/${bebida.p}</span>
+<span>${b.n} - S/${b.p}</span>
 <div>
-<button type="button" onclick="cambiar('bebida',${i},-1)">-</button>
+<button type="button" onclick="cambiarBebida(${i},-1)">-</button>
 <span class="contador" id="bebida${i}">0</span>
-<button type="button" onclick="cambiar('bebida',${i},1)">+</button>
+<button type="button" onclick="cambiarBebida(${i},1)">+</button>
 </div>
 </div>
 `;
 });
 
-let cantidadesPan = Array(panes.length).fill(0);
-let cantidadesBebida = Array(bebidas.length).fill(0);
+let cantidadesPan = new Array(panes.length).fill(0);
+let cantidadesBebida = new Array(bebidas.length).fill(0);
 
-/* CAMBIAR CANTIDAD */
-function cambiar(tipo,index,valor){
-
-if(tipo==="pan"){
-cantidadesPan[index] = Math.max(0,cantidadesPan[index]+valor);
-document.getElementById("pan"+index).innerText = cantidadesPan[index];
-}
-
-if(tipo==="bebida"){
-cantidadesBebida[index] = Math.max(0,cantidadesBebida[index]+valor);
-document.getElementById("bebida"+index).innerText = cantidadesBebida[index];
-}
-
+/* PANES */
+function cambiarPan(i,valor){
+cantidadesPan[i] = Math.max(0,cantidadesPan[i]+valor);
+document.getElementById("pan"+i).innerText = cantidadesPan[i];
 calc();
 }
 
-/* CALCULAR TOTAL */
+/* BEBIDAS */
+function cambiarBebida(i,valor){
+cantidadesBebida[i] = Math.max(0,cantidadesBebida[i]+valor);
+document.getElementById("bebida"+i).innerText = cantidadesBebida[i];
+calc();
+}
+
+/* TOTAL */
 function calc(){
 
 let total = 0;
 
+/* PANES */
 cantidadesPan.forEach(c=>{
 total += c * precioPan;
 });
 
+/* BEBIDAS */
 cantidadesBebida.forEach((c,i)=>{
 total += c * bebidas[i].p;
 });
 
-let tipoPan = document.querySelector('input[name="tipoPan"]:checked').value;
+/* PAN INTEGRAL */
+let tipo = document.querySelector('input[name="tipoPan"]:checked').value;
 
-if(tipoPan.includes("Integral")){
+if(tipo.includes("Integral")){
 total += 0.30;
 }
 
@@ -210,9 +213,9 @@ document.getElementById("total").innerText =
 "S/" + total.toFixed(2);
 }
 
-/* CAMBIO RADIO */
+/* RADIO */
 document.querySelectorAll('input[name="tipoPan"]').forEach(r=>{
-r.addEventListener("change",calc);
+r.addEventListener("change", calc);
 });
 
 let bloqueado = false;
@@ -224,33 +227,35 @@ if(bloqueado) return;
 
 let nombre = document.getElementById("nombre").value.trim();
 
-if(nombre===""){
+if(!nombre){
 alert("Ingresa tu nombre");
 return;
 }
 
-let pedidoPanes = [];
-let pedidoBebidas = [];
+let p = [];
+let b = [];
 
-cantidadesPan.forEach((c,i)=>{
-if(c>0){
-pedidoPanes.push({
+/* PANES */
+cantidadesPan.forEach((cantidad,i)=>{
+if(cantidad > 0){
+p.push({
 nombre: panes[i],
-cantidad: c
+cantidad: cantidad
 });
 }
 });
 
-cantidadesBebida.forEach((c,i)=>{
-if(c>0){
-pedidoBebidas.push({
+/* BEBIDAS */
+cantidadesBebida.forEach((cantidad,i)=>{
+if(cantidad > 0){
+b.push({
 nombre: bebidas[i].n,
-cantidad: c
+cantidad: cantidad
 });
 }
 });
 
-if(pedidoPanes.length===0 && pedidoBebidas.length===0){
+if(p.length === 0 && b.length === 0){
 alert("Selecciona al menos un producto");
 return;
 }
@@ -265,31 +270,33 @@ let total = document.getElementById("total").innerText;
 
 try{
 
-await fetch(URL,{
+const response = await fetch(URL,{
 method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
+body: JSON.stringify({
 nombre,
-panes:pedidoPanes,
-bebidas:pedidoBebidas,
+panes:p,
+bebidas:b,
 tipoPan,
 total
 })
 });
 
+if(response.ok){
 btn.innerText = "Pedido enviado ✅";
 
 setTimeout(()=>{
 location.reload();
 },700);
 
+}else{
+throw new Error("Error");
+}
+
 }catch(error){
 
 alert("Error al enviar pedido");
-btn.innerText="Confirmar Pedido";
-bloqueado=false;
+btn.innerText = "Confirmar Pedido";
+bloqueado = false;
 
 }
 
