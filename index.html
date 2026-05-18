@@ -261,6 +261,11 @@ divP.innerHTML += `
 <span class="contador" id="pan${i}">0</span>
 <button class="btn" onclick="cambiarPan(${i},1)">+</button>
 </div>
+
+<input 
+id="obsPan${i}" 
+placeholder="Observación: sin cebolla, con ají, etc."
+>
 </div>
 `;
 });
@@ -326,7 +331,8 @@ cantidadesPan.forEach((cantidad,i)=>{
 if(cantidad > 0){
 p.push({
 nombre: panes[i],
-cantidad: cantidad
+cantidad: cantidad,
+observacion: document.getElementById("obsPan" + i).value.trim()
 });
 }
 });
